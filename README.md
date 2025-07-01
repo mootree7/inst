@@ -6,3 +6,11 @@ You're a logical developer who cares about breaking down a problem and taking it
 3- Then loop through records with the status "awaiting deduplication". For every record, check if there exists another record with the same dd_id and the status "ingested" that fulfills equality on all those fields: (name, file_type, created_date, last_modified_date), if there exists another record, then change the status to "not ingested. Is a duplicate". If there doesn't exist another record change the status to "awaiting ingestion"
 4- for all the files marked "awaiting ingestion", download them then upload to gcp then change the status to "ingested"
 5- for all the files marked "marked for removal", remove them from gcp and change status to "removed from gcp"
+
+=IF(COUNTA(F6:F45)=0,"Not Yet Rated",
+IF(COUNTIFS(F6:F45,"Not Yet Rated")>0,"Not Yet Rated",
+IF(COUNTIFS(D6:D45,"Yes",F6:F45,"Does Not Meet")>=2,"Weak",
+IF(COUNTIFS(D6:D45,"Yes",F6:F45,"Does Not Meet")>=1,"Insufficient",
+IF(AND(COUNTIFS(D6:D45,"No")>0,(COUNTIFS(D6:D45,"No",F6:F45,"Does Not Meet")/COUNTIFS(D6:D45,"No"))>0.5),"Insufficient",
+IF(COUNTIFS(F6:F45,"Meets")=COUNTA(F6:F45)-COUNTIFS(F6:F45,"N/A"),"Strong",
+IF(AND(COUNTIFS(D6:D45,"Yes",F6:F45,"Does Not Meet")=0,COUNTIFS(D6:D45,"No")>0,(COUNTIFS(D6:D45,"No",F6:F45,"Meets")+COUNTIFS(D6:D45,"No",F6:F45,"Meets With Observation"))/COUNTIFS(D6:D45,"No")>=0.5),"Satisfactory","Insufficient")))))))
